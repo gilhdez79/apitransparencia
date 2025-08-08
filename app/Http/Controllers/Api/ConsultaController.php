@@ -16,26 +16,35 @@ class ConsultaController extends Controller
     public function __construct(Consulta $consulta){
         $this->$consulta = $consulta;
     }
+public function index(){
 
-    public function index(){
+}
+public function GetHipervinculos(\Illuminate\Http\Request $request){
 
-$statement = DB::statement("SET @annio=2024");
-$statement2 = DB::statement("SET @idarticulo=76");
-$statement3 = DB::statement("SET @IdFraccion=40");
-$statement4 = DB::statement("SET @idTrimestre=1");
+    //Get all JSON data as an Asspociative array
+    $data = $request->json();
+    $annio = $data->get('annio');
+    $idarticulo = $data->get('idarticulo');
+    $idfraccion = $data->get('idfraccion');
+    $idtrimestre = $data->get('idtrimestre');
+
+//dd($data);
+
+$statement = DB::statement("SET @annio='$annio'");
+$statement2 = DB::statement("SET @idarticulo='$idarticulo'");
+$statement3 = DB::statement("SET @IdFraccion='$idfraccion'");
+$statement4 = DB::statement("SET @idTrimestre='$idtrimestre'");
 
 $consultas = DB::select("
-select d.ID,d.Link , d.NombreArchivo,d.Annio, d.idArticulo, f.Nombre, t.NombreCorto  
+select d.ID,d.Link , d.NombreArchivo,d.Annio, d.idArticulo, f.Nombre as Fraccion, t.NombreCorto  As Trimestre
 from datoslinks d 
 	join fraccions f on f.Id = d.IdFraccion
 	join trimestre t on t.Id = d.idTrimestre 
 	where (@annio=0 OR d.Annio = @annio) and
-		  (@idarticulo=0 or d.idArticulo = 76) and 
-	 	  (@IdFraccion=0 or IdFraccion = 40) and 
-	 	  (@idTrimestre=0 or d.idTrimestre = 1)
+		  (@idarticulo=0 or d.idArticulo = @idarticulo) and 
+	 	  (@IdFraccion=0 or IdFraccion = @IdFraccion) and 
+	 	  (@idTrimestre=0 or d.idTrimestre = @idTrimestre)
 ");
-
-
         // $consultas =  DB::table('datoslinks')
         // ->join('fraccions', 'datoslinks.IdFraccion', "=", 'fraccions.id')
         // ->join('trimestre', 'datoslinks.idTrimestre', "=", 'trimestre.id')
@@ -47,10 +56,6 @@ from datoslinks d
         // ->get();
 
         return response()->json($consultas);
-
-
-
-
-        //return response()->json($fraccions);
+ 
     }
 }

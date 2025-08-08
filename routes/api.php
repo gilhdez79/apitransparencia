@@ -25,4 +25,6 @@ Route::namespace('Api\Controllers')->group(function(){
 Route::get('/fracciones', [FraccionController::class, "index"]);
 Route::get('/articulos', [ArticuloController::class, "index"]);
 Route::get('/consulta', [ConsultaController::class, "index"]);
+Route::post('/getconsulta', [ConsultaController::class, "GetHipervinculos"]);
+
 });
