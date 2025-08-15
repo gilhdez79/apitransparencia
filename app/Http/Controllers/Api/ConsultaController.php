@@ -36,7 +36,7 @@ $statement3 = DB::statement("SET @IdFraccion='$idfraccion'");
 $statement4 = DB::statement("SET @idTrimestre='$idtrimestre'");
 
 $consultas = DB::select("
-select d.ID,d.Link , d.NombreArchivo,d.Annio, d.idArticulo, f.Nombre as Fraccion, t.NombreCorto  As Trimestre
+select d.ID,d.Link , d.NombreArchivo,d.Annio, d.idArticulo, f.Nombre as Fraccion, t.NombreCorto, t.Id  As Trimestre,f.Consecutivo
 from datoslinks d 
 	join fraccions f on f.Id = d.IdFraccion
 	join trimestre t on t.Id = d.idTrimestre 
