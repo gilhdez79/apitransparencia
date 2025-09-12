@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ConsultaController;
+use App\Http\Controllers\Api\DatosLinksController;
 use App\Http\Controllers\Api\FraccionController;
 use App\Http\Controllers\Api\ArticuloController;
 
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api;
 use App\Models\Articulo;
 use App\Models\Consulta;
+use App\Models\datoslinks;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -26,5 +28,6 @@ Route::get('/fracciones', [FraccionController::class, "index"]);
 Route::get('/articulos', [ArticuloController::class, "index"]);
 Route::get('/consulta', [ConsultaController::class, "index"]);
 Route::post('/getconsulta', [ConsultaController::class, "GetHipervinculos"]);
+Route::post('/registrar', [DatosLinksController::class, "Registrar"]);
 
 });

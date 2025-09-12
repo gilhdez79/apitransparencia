@@ -1,11 +1,9 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-
 use App\Http\Controllers\Controller;
 use App\Models\Articulo;
 use Illuminate\Http\Request;
-
 class ArticuloController extends Controller
 {
     //
