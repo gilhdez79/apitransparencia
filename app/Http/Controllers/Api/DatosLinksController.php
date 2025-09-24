@@ -15,6 +15,9 @@ class DatosLinksController extends Controller
         $this->datoslinks = $datoslinks;
     }
     public function Registrar(Request $request){
+        
+    
+        print_r( $request);
 
     try{
         $data = $request->all();
