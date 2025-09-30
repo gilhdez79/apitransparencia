@@ -12,30 +12,33 @@ use Illuminate\Http\Request;
 class ConsultaController extends Controller
 {
     //
-        private $consulta;
-    public function __construct(Consulta $consulta){
+    private $consulta;
+    public function __construct(Consulta $consulta)
+    {
         $this->$consulta = $consulta;
     }
-public function index(){
+    public function index()
+    {
 
-}
-public function GetHipervinculos(\Illuminate\Http\Request $request){
+    }
+    public function GetHipervinculos(\Illuminate\Http\Request $request)
+    {
 
-    //Get all JSON data as an Asspociative array
-    $data = $request->json();
-    $annio = $data->get('annio');
-    $idarticulo = $data->get('idarticulo');
-    $idfraccion = $data->get('idfraccion');
-    $idtrimestre = $data->get('idtrimestre');
+        //Get all JSON data as an Asspociative array
+        $data = $request->json();
+        $annio = $data->get('annio');
+        $idarticulo = $data->get('idarticulo');
+        $idfraccion = $data->get('idfraccion');
+        $idtrimestre = $data->get('idtrimestre');
 
-//dd($data);
+        //dd($data);
 
-$statement = DB::statement("SET @annio='$annio'");
-$statement2 = DB::statement("SET @idarticulo='$idarticulo'");
-$statement3 = DB::statement("SET @IdFraccion='$idfraccion'");
-$statement4 = DB::statement("SET @idTrimestre='$idtrimestre'");
+        $statement = DB::statement("SET @annio='$annio'");
+        $statement2 = DB::statement("SET @idarticulo='$idarticulo'");
+        $statement3 = DB::statement("SET @IdFraccion='$idfraccion'");
+        $statement4 = DB::statement("SET @idTrimestre='$idtrimestre'");
 
-$consultas = DB::select("
+        $consultas = DB::select("
 select d.ID,d.Link , d.NombreArchivo,d.Annio, d.idArticulo, f.Nombre as Fraccion, t.NombreCorto, t.Id  As Trimestre,f.Consecutivo
 from datoslinks d 
 	join fraccions f on f.Id = d.IdFraccion
@@ -56,6 +59,17 @@ from datoslinks d
         // ->get();
 
         return response()->json($consultas);
- 
+
     }
+
+    public function GetLeyes()
+    {
+        $consultas = DB::select("
+select d.ID,d.Link , d.NombreArchivo Documento, d.Annio 
+from datoslinks d 
+	where Clasificacion = 8
+");
+        return response()->json($consultas);
+    }
+
 }

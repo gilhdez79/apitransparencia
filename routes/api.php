@@ -29,5 +29,6 @@ Route::get('/articulos', [ArticuloController::class, "index"]);
 Route::get('/consulta', [ConsultaController::class, "index"]);
 Route::post('/getconsulta', [ConsultaController::class, "GetHipervinculos"]);
 Route::post('/registrar', [DatosLinksController::class, "Registrar"]);
+Route::get('/getleyes', [ConsultaController::class, "GetLeyes"]);
 
 });
