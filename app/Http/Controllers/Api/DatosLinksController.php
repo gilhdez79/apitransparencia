@@ -10,24 +10,26 @@ use PhpParser\Node\Stmt\TryCatch;
 class DatosLinksController extends Controller
 {
     //
-      private $datoslinks;
-    public function __construct(datoslinks $datoslinks){
+    private $datoslinks;
+    public function __construct(datoslinks $datoslinks)
+    {
         $this->datoslinks = $datoslinks;
     }
-    public function Registrar(Request $request){
-             
+    public function Registrar(Request $request)
+    {
 
-    try{
-        $data = $request->all();
-        $this->datoslinks->create($data);
+
+        try {
+            $data = $request->all();
+            $this->datoslinks->create($data);
             return response()->json([
-            'message'=>  "Se ha guardado correctamente"
-        ]);
-    }catch(\Exception $e){
-        return response()->json([
-            'message'=> $e->getMessage()
-        ]);
-    }
+                'message' => "Se ha guardado correctamente"
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ]);
+        }
 
     }
 }

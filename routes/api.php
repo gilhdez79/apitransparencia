@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\ArticuloController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api;
+use App\Http\Controllers\Api\EstradosController;
 use App\Models\Articulo;
 use App\Models\Consulta;
 use App\Models\datoslinks;
@@ -30,5 +31,7 @@ Route::get('/consulta', [ConsultaController::class, "index"]);
 Route::post('/getconsulta', [ConsultaController::class, "GetHipervinculos"]);
 Route::post('/registrar', [DatosLinksController::class, "Registrar"]);
 Route::get('/getleyes', [ConsultaController::class, "GetLeyes"]);
+Route::get('/getestrados', [EstradosController::class, "GetEstrados"]);
+Route::post('/registrarestrado', [EstradosController::class, "RegistrarEstrado"]);
 
 });
