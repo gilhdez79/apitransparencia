@@ -10,9 +10,12 @@ class Estrados extends Model
         protected $fillable = [
     'id',
 	"annio",
+	"nombrearchivo",
 	"idtipoestrado",
 	"link",
 	"idponencia",
-	"fecha"
+	"fecha",
+	"created_at",
+	"updated_at"
     ];
 }
