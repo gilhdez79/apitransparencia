@@ -21,7 +21,8 @@ class datoslinks extends Model
 	"idarticulo",
 	"idfraccion",
 	"idinciso",
-	"mostrarentransp"
+	"mostrarentransp",
+	"clasificacion"
     ];
    
 }
