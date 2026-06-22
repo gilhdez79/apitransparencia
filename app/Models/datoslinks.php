@@ -22,7 +22,10 @@ class datoslinks extends Model
 	"idfraccion",
 	"idinciso",
 	"mostrarentransp",
-	"clasificacion"
-    ];
+	"clasificacion",
+	"idponencia",
+	"idtipoestrado",
+	"idsubcategoriahijo",
+	"idsubcategoria"    ];
    
 }
