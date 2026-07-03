@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\ConsultaController;
 use App\Http\Controllers\Api\DatosLinksController;
 use App\Http\Controllers\Api\FraccionController;
 use App\Http\Controllers\Api\ArticuloController;
+use App\Http\Controllers\Api\LoginController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -33,5 +34,6 @@ Route::post('/registrar', [DatosLinksController::class, "Registrar"]);
 Route::get('/getleyes', [ConsultaController::class, "GetLeyes"]);
 Route::get('/getestrados', [EstradosController::class, "GetEstrados"]);
 Route::post('/registrarestrado', [EstradosController::class, "RegistrarEstrado"]);
+Route::post('/login', [LoginController::class, "Login"]);
 
 });
