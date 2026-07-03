@@ -6,16 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Estrados extends Model
 {
-    //
-        protected $fillable = [
-    'id',
-	"annio",
-	"nombrearchivo",
-	"idtipoestrado",
-	"link",
-	"idponencia",
-	"fecha",
-	"created_at",
-	"updated_at"
+    protected $table = 'estrados';
+
+    protected $primaryKey = 'Id';
+
+    protected $fillable = [
+        'annio',
+        'nombrearchivo',
+        'idtipoestrado',
+        'link',
+        'idponencia',
+        'fecha',
     ];
 }
