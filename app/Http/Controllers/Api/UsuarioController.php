@@ -18,7 +18,7 @@ class UsuarioController extends Controller
             'Pasword' => ['required', 'string'],
         ]);
 
-        $usuario = DB::table('Usuarios')
+        $usuario = DB::table('usuarios')
             ->where('Usuario', $datos['Usuario'])
             ->first();
 
