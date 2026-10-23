@@ -25,6 +25,7 @@ class UsuarioController extends Controller
         if (! $usuario || ! $this->passwordValido($datos['Pasword'], $usuario->Pasword ?? null)) {
             return response()->json([
                 'message' => 'Usuario o password incorrecto',
+                'Success' => false,
             ], 401);
         }
 
@@ -34,6 +35,7 @@ class UsuarioController extends Controller
         return response()->json([
             'message' => 'Usuario validado correctamente',
             'usuario' => $datosUsuario,
+            'Success' => true,
         ]);
     }
 
