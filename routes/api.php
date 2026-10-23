@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\DatosLinksController;
 use App\Http\Controllers\Api\FraccionController;
 use App\Http\Controllers\Api\ArticuloController;
 use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\Api\UsuarioController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -35,5 +36,8 @@ Route::get('/getleyes', [ConsultaController::class, "GetLeyes"]);
 Route::get('/getestrados', [EstradosController::class, "GetEstrados"]);
 Route::post('/registrarestrado', [EstradosController::class, "RegistrarEstrado"]);
 Route::post('/login', [LoginController::class, "Login"]);
+Route::post('/usuarios', [UsuarioController::class, "store"]);
+Route::post('/registrarusuario', [UsuarioController::class, "store"]);
+Route::post('/validarusuario', [UsuarioController::class, "validar"]);
 
 });

@@ -16,7 +16,9 @@ class ConsultaController extends Controller
         $this->consulta = $consulta;
     }
 
-    public function index() {}
+    public function index() {
+        return response()->json([]);
+    }
 
     public function GetHipervinculos(Request $request)
     {
@@ -63,7 +65,7 @@ class ConsultaController extends Controller
             SELECT d.ID, d.Link, d.NombreArchivo AS Documento, d.Annio
             FROM datoslinks d
             WHERE d.Clasificacion = ?
-        ', [1]);
+        ', [8]);
 
         return response()->json($consultas);
     }
