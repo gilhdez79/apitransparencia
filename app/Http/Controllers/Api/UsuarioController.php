@@ -40,12 +40,12 @@ class UsuarioController extends Controller
     public function store(Request $request): JsonResponse
     {
         $datos = $request->validate([
-            'Usuario' => ['required', 'string', 'max:255', 'unique:Usuarios,Usuario'],
+            'Usuario' => ['required', 'string', 'max:255', 'unique:usuarios,Usuario'],
             'Nombre' => ['required', 'string', 'max:255'],
             'ApellidoP' => ['required', 'string', 'max:255'],
             'Amaterno' => ['required', 'string', 'max:255'],
             'Pasword' => ['required', 'string', 'min:8'],
-            'CorreoElectronico' => ['required', 'email', 'max:255', 'unique:Usuarios,CorreoElectronico'],
+            'CorreoElectronico' => ['required', 'email', 'max:255', 'unique:usuarios,CorreoElectronico'],
         ]);
 
         $usuario = Usuario::create([

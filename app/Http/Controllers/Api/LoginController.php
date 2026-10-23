@@ -17,7 +17,7 @@ class LoginController extends Controller
             'password' => ['nullable', 'string', 'required_without:Pasword'],
         ]);
 
-        $usuario = DB::table('Usuarios')
+        $usuario = DB::table('usuarios')
             ->where('Usuario', $request->input('Usuario'))
             ->first();
 
