@@ -12,10 +12,16 @@ class Estrados extends Model
 
     protected $fillable = [
         'annio',
+        'Annio',
         'nombrearchivo',
+        'NombreArchivo',
         'idtipoestrado',
+        'IdTipoEstrado',
         'link',
+        'Link',
         'idponencia',
+        'IdPonencia',
         'fecha',
+        'Fecha',
     ];
 }

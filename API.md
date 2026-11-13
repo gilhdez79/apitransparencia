@@ -94,11 +94,13 @@ Ejemplo:
 }
 ```
 
-Respuesta `200`:
+Respuesta `201`:
 
 ```json
 {
-  "message": "Se ha guardado correctamente"
+  "success": true,
+  "message": "Se ha guardado correctamente",
+  "id": 1
 }
 ```
 
@@ -135,11 +137,13 @@ Ejemplo:
 }
 ```
 
-Respuesta `200`:
+Respuesta `201`:
 
 ```json
 {
-  "message": "Se ha guardado correctamente"
+  "success": true,
+  "message": "Se ha guardado correctamente",
+  "id": 1
 }
 ```
 

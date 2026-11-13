@@ -66,8 +66,8 @@ class ApiEndpointsTest extends TestCase
 
         $response = $this->postJson('/api/registrar', $data);
 
-        $response->assertOk()
-                 ->assertJson(['message' => 'Se ha guardado correctamente']);
+        $response->assertStatus(201)
+                 ->assertJson(['success' => true, 'message' => 'Se ha guardado correctamente']);
 
         $this->assertDatabaseHas('datoslinks', [
             'Link' => 'https://example.com/test.pdf',
@@ -78,6 +78,29 @@ class ApiEndpointsTest extends TestCase
             'idTrimestre' => 1,
             'Clasificacion' => 1,
         ]);
+    }
+
+    public function test_registrar_link_accepts_pascal_case_and_validates(): void
+    {
+        $data = [
+            'Link' => 'https://example.com/pascal.pdf',
+            'NombreArchivo' => 'pascal.pdf',
+            'Annio' => 2025,
+        ];
+
+        $response = $this->postJson('/api/registrar', $data);
+
+        $response->assertStatus(201)
+                 ->assertJson(['success' => true]);
+
+        $this->assertDatabaseHas('datoslinks', [
+            'Link' => 'https://example.com/pascal.pdf',
+            'NombreArchivo' => 'pascal.pdf',
+        ]);
+
+        // Validation failure when link is missing
+        $failResponse = $this->postJson('/api/registrar', ['annio' => 2024]);
+        $failResponse->assertStatus(422);
     }
 
     public function test_getestrados_returns_list(): void
@@ -110,8 +133,8 @@ class ApiEndpointsTest extends TestCase
 
         $response = $this->postJson('/api/registrarestrado', $data);
 
-        $response->assertOk()
-                 ->assertJson(['message' => 'Se ha guardado correctamente']);
+        $response->assertStatus(201)
+                 ->assertJson(['success' => true, 'message' => 'Se ha guardado correctamente']);
 
         $this->assertDatabaseHas('estrados', [
             'idtipoestrado' => 1,
@@ -119,6 +142,12 @@ class ApiEndpointsTest extends TestCase
             'fecha' => '2024-01-01',
             'nombrearchivo' => 'archivo.pdf'
         ]);
+    }
+
+    public function test_registrarestrado_validates_required_fields(): void
+    {
+        $response = $this->postJson('/api/registrarestrado', []);
+        $response->assertStatus(422);
     }
 
     public function test_login_with_correct_credentials_returns_success(): void
