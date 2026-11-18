@@ -1,0 +1,303 @@
+{
+  "info": {
+    "_postman_id": "c1f7b02e-9824-4f51-b0db-transparencia-v1",
+    "name": "API Transparencia",
+    "description": "Colección completa de endpoints para la API de Transparencia y Acceso a la Información Pública.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Sistema",
+      "item": [
+        {
+          "name": "Verificar Estado (Ping)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/test",
+              "host": ["{{baseUrl}}"],
+              "path": ["test"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Catálogos",
+      "item": [
+        {
+          "name": "Listar Fracciones",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/fracciones",
+              "host": ["{{baseUrl}}"],
+              "path": ["fracciones"]
+            }
+          }
+        },
+        {
+          "name": "Listar Artículos",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/articulos",
+              "host": ["{{baseUrl}}"],
+              "path": ["articulos"]
+            }
+          }
+        },
+        {
+          "name": "Listar Elementos (Catálogo)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/elementos",
+              "host": ["{{baseUrl}}"],
+              "path": ["elementos"]
+            }
+          }
+        },
+        {
+          "name": "Generar Elemento (Registrar)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"NombreElemento\": \"Auditorías Externas\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/generaelemento",
+              "host": ["{{baseUrl}}"],
+              "path": ["generaelemento"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Consultas",
+      "item": [
+        {
+          "name": "Consulta Base Inicial",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/consulta",
+              "host": ["{{baseUrl}}"],
+              "path": ["consulta"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Hipervínculos Filtrados",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"annio\": 2024,\n  \"idarticulo\": 1,\n  \"idfraccion\": 1,\n  \"idtrimestre\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/getconsulta",
+              "host": ["{{baseUrl}}"],
+              "path": ["getconsulta"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Leyes (Clasificación 8)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/getleyes",
+              "host": ["{{baseUrl}}"],
+              "path": ["getleyes"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Enlaces y Documentos",
+      "item": [
+        {
+          "name": "Registrar Enlace / Documento",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"link\": \"https://transparencia.gob.mx/doctos/acta_ejemplo.pdf\",\n  \"nombrearchivo\": \"acta_ejemplo.pdf\",\n  \"annio\": 2026,\n  \"idarticulo\": 1,\n  \"idfraccion\": 1,\n  \"idtrimestre\": 1,\n  \"clasificacion\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/registrar",
+              "host": ["{{baseUrl}}"],
+              "path": ["registrar"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Estrados",
+      "item": [
+        {
+          "name": "Consultar Estrados",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/getestrados",
+              "host": ["{{baseUrl}}"],
+              "path": ["getestrados"]
+            }
+          }
+        },
+        {
+          "name": "Registrar Estrado",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idtipoestrado\": 1,\n  \"idponencia\": 1,\n  \"fecha\": \"2026-11-13\",\n  \"nombrearchivo\": \"notificacion_estrado_44.pdf\",\n  \"link\": \"https://transparencia.gob.mx/estrados/notificacion_44.pdf\",\n  \"annio\": 2026\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/registrarestrado",
+              "host": ["{{baseUrl}}"],
+              "path": ["registrarestrado"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Autenticación y Usuarios",
+      "item": [
+        {
+          "name": "Iniciar Sesión (Login)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Usuario\": \"admin\",\n  \"Pasword\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["login"]
+            }
+          }
+        },
+        {
+          "name": "Validar Usuario Directo",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Usuario\": \"admin\",\n  \"Pasword\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/validarusuario",
+              "host": ["{{baseUrl}}"],
+              "path": ["validarusuario"]
+            }
+          }
+        },
+        {
+          "name": "Registrar Nuevo Usuario",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Usuario\": \"usuario_nuevo\",\n  \"Nombre\": \"Carlos\",\n  \"ApellidoP\": \"Pérez\",\n  \"Amaterno\": \"Gómez\",\n  \"Pasword\": \"SuperClave2026!\",\n  \"CorreoElectronico\": \"carlos.perez@transparencia.gob.mx\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/registrarusuario",
+              "host": ["{{baseUrl}}"],
+              "path": ["registrarusuario"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Usuario Autenticado (Sanctum)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "{{token}}", "type": "string" }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user",
+              "host": ["{{baseUrl}}"],
+              "path": ["user"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

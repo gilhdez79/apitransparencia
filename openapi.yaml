@@ -1,0 +1,960 @@
+openapi: 3.1.0
+info:
+  title: API de Transparencia
+  version: 1.2.0
+  description: |
+    API RESTful de Transparencia y Acceso a la Información Pública.
+    Proporciona servicios de consulta pública de fracciones, artículos, estrados y leyes,
+    así como servicios de carga de hipervínculos, registro de notificaciones (estrados) y
+    administración de usuarios con autenticación segura.
+  contact:
+    name: Soporte Técnico Transparencia
+    email: soporte@transparencia.local
+servers:
+  - url: http://127.0.0.1:8000/api
+    description: Servidor de desarrollo local
+  - url: https://transparencia.local/api
+    description: Servidor de producción / staging
+
+tags:
+  - name: Sistema
+    description: Diagnóstico y estado del servicio
+  - name: Catálogos
+    description: Catálogos base de la Ley de Transparencia (Artículos, Fracciones y Elementos)
+  - name: Consultas
+    description: Búsqueda y filtrado de documentos e hipervínculos de transparencia
+  - name: Enlaces
+    description: Gestión y registro de documentos y vínculos normativos (datoslinks)
+  - name: Estrados
+    description: Publicación y consulta de estrados y notificaciones oficiales
+  - name: Autenticación y Usuarios
+    description: Inicio de sesión, validación y gestión de cuentas de usuario
+
+paths:
+  /test:
+    get:
+      tags:
+        - Sistema
+      summary: Comprobación de estado del API
+      description: Devuelve un mensaje de saludo y confirmación de disponibilidad del servicio.
+      operationId: getTestStatus
+      responses:
+        '200':
+          description: Servicio disponible
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: Mi primer Respuesta de API
+
+  /fracciones:
+    get:
+      tags:
+        - Catálogos
+      summary: Listar fracciones
+      description: Obtiene el catálogo completo de fracciones normativas registradas.
+      operationId: getFracciones
+      responses:
+        '200':
+          description: Lista de fracciones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Fraccion'
+              example:
+                - Id: 1
+                  Nombre: Fracción I
+                  Consecutivo: 1
+                - Id: 2
+                  Nombre: Fracción II
+                  Consecutivo: 2
+
+  /articulos:
+    get:
+      tags:
+        - Catálogos
+      summary: Listar artículos
+      description: Obtiene el catálogo completo de artículos de la ley de transparencia.
+      operationId: getArticulos
+      responses:
+        '200':
+          description: Lista de artículos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Articulo'
+              example:
+                - Id: 1
+                  Nombre: Artículo 70
+                - Id: 2
+                  Nombre: Artículo 71
+
+  /elementos:
+    get:
+      tags:
+        - Catálogos
+      summary: Listar elementos / secciones
+      description: Obtiene el catálogo completo de elementos y clasificaciones de la tabla `elementos`.
+      operationId: getElementos
+      responses:
+        '200':
+          description: Lista de elementos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Elemento'
+              example:
+                - Id: 1
+                  NombreElemento: Articulo
+                - Id: 8
+                  NombreElemento: Leyes
+    post:
+      tags:
+        - Catálogos
+      summary: Registrar nuevo elemento (alias REST)
+      description: Crea un nuevo elemento en la tabla `elementos`.
+      operationId: postElementosAlias
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrarElementoRequest'
+      responses:
+        '201':
+          $ref: '#/components/responses/201ElementoCreated'
+        '422':
+          $ref: '#/components/responses/422ValidationError'
+        '500':
+          $ref: '#/components/responses/500ServerError'
+
+  /generaelemento:
+    get:
+      tags:
+        - Catálogos
+      summary: Listar elementos (alias de consulta)
+      description: Alias de consulta para obtener el catálogo de la tabla `elementos`.
+      operationId: getGeneraElementoAlias
+      responses:
+        '200':
+          description: Lista de elementos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Elemento'
+    post:
+      tags:
+        - Catálogos
+      summary: Generar y registrar nuevo elemento
+      description: Registra un nuevo elemento en la tabla `elementos`. Valida que el nombre sea obligatorio, no supere 100 caracteres y sea único.
+      operationId: postGeneraElemento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrarElementoRequest'
+            example:
+              NombreElemento: Auditorías Externas
+      responses:
+        '201':
+          $ref: '#/components/responses/201ElementoCreated'
+        '422':
+          $ref: '#/components/responses/422ValidationError'
+        '500':
+          $ref: '#/components/responses/500ServerError'
+
+  /consulta:
+    get:
+      tags:
+        - Consultas
+      summary: Consulta general inicial
+      description: Endpoint reservado para consulta base de enlaces. Retorna un arreglo vacío por omisión.
+      operationId: getConsultaGeneral
+      responses:
+        '200':
+          description: Arreglo de resultados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+              example: []
+
+  /getconsulta:
+    post:
+      tags:
+        - Consultas
+      summary: Filtrar documentos e hipervínculos
+      description: |
+        Busca hipervínculos de transparencia cruzando datos de enlaces con fracciones y trimestres.
+        **Regla de filtrado**: Pasar el valor `0` omite el filtro correspondiente (equivalente a comodín o comodín "todos").
+      operationId: getConsultaFiltrada
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConsultaFiltroRequest'
+            example:
+              annio: 2024
+              idarticulo: 1
+              idfraccion: 1
+              idtrimestre: 1
+      responses:
+        '200':
+          description: Lista de documentos que coinciden con los criterios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ConsultaDocumentoResult'
+              example:
+                - ID: 105
+                  Link: https://transparencia.gob.mx/doctos/acta2024.pdf
+                  NombreArchivo: acta2024.pdf
+                  Annio: 2024
+                  idArticulo: 1
+                  Fraccion: Fracción I
+                  NombreCorto: 1er Trim
+                  Trimestre: 1
+                  Consecutivo: 1
+
+  /getleyes:
+    get:
+      tags:
+        - Consultas
+      summary: Obtener compendio de leyes
+      description: Retorna los documentos normativos clasificados con el identificador `8` (Leyes y Reglamentos).
+      operationId: getLeyes
+      responses:
+        '200':
+          description: Listado de documentos de leyes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LeyDocumento'
+              example:
+                - ID: 34
+                  Link: https://transparencia.gob.mx/leyes/ley_transparencia.pdf
+                  Documento: Ley General de Transparencia
+                  Annio: 2024
+
+  /registrar:
+    post:
+      tags:
+        - Enlaces
+      summary: Registrar nuevo enlace o documento
+      description: Guarda un nuevo registro documental en la tabla `datoslinks`. Admite campos tanto en minúsculas como en PascalCase.
+      operationId: postRegistrarEnlace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrarEnlaceRequest'
+            examples:
+              completo:
+                summary: Registro con parámetros estándar
+                value:
+                  link: https://transparencia.gob.mx/doctos/presupuesto_2026.pdf
+                  nombrearchivo: presupuesto_2026.pdf
+                  annio: 2026
+                  idarticulo: 1
+                  idfraccion: 2
+                  idtrimestre: 1
+                  clasificacion: 1
+      responses:
+        '201':
+          description: Registro creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessCreatedResponse'
+              example:
+                success: true
+                message: Se ha guardado correctamente
+                id: 7833
+        '422':
+          $ref: '#/components/responses/422ValidationError'
+        '500':
+          $ref: '#/components/responses/500ServerError'
+
+  /getestrados:
+    get:
+      tags:
+        - Estrados
+      summary: Consultar estrados
+      description: Retorna la lista de notificaciones y estrados públicos uniendo el tipo de estrado y la ponencia correspondiente.
+      operationId: getEstrados
+      responses:
+        '200':
+          description: Lista de estrados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EstradoItem'
+              example:
+                - Id: 1
+                  Annio: 2024
+                  NombreArchivo: notificacion_acuerdo_01.pdf
+                  IdTipoEstrado: 1
+                  Link: https://transparencia.gob.mx/estrados/acuerdo_01.pdf
+                  IdPonencia: 2
+                  Fecha: '2024-03-15 10:00:00'
+                  Estrado: Estrado Físico
+                  ponencia: Ponencia Primera
+
+  /registrarestrado:
+    post:
+      tags:
+        - Estrados
+      summary: Registrar nuevo estrado
+      description: Da de alta un estrado o cédula de notificación oficial en la base de datos.
+      operationId: postRegistrarEstrado
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrarEstradoRequest'
+            example:
+              idtipoestrado: 1
+              idponencia: 1
+              fecha: '2026-11-13'
+              nombrearchivo: cedula_notificacion_52.pdf
+              link: https://transparencia.gob.mx/estrados/cedula_52.pdf
+              annio: 2026
+      responses:
+        '201':
+          description: Estrado registrado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessCreatedResponse'
+              example:
+                success: true
+                message: Se ha guardado correctamente
+                id: 134
+        '422':
+          $ref: '#/components/responses/422ValidationError'
+        '500':
+          $ref: '#/components/responses/500ServerError'
+
+  /login:
+    post:
+      tags:
+        - Autenticación y Usuarios
+      summary: Iniciar sesión de usuario
+      description: |
+        Autentica a un usuario verificando su identificador y contraseña.
+        Acepta `Pasword` o `password` para compatibilidad. Valida contraseñas con hash Bcrypt o texto plano seguro.
+        La respuesta sanitiza el objeto de usuario omitiendo cualquier campo de contraseña.
+      operationId: postLogin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            example:
+              Usuario: admin
+              Pasword: password-seguro-123
+      responses:
+        '200':
+          description: Autenticación exitosa
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Login correcto
+                  usuario:
+                    $ref: '#/components/schemas/UsuarioSanitizado'
+        '401':
+          description: Credenciales incorrectas o usuario no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Usuario o password incorrecto
+        '422':
+          $ref: '#/components/responses/422ValidationError'
+
+  /validarusuario:
+    post:
+      tags:
+        - Autenticación y Usuarios
+      summary: Validar credenciales de usuario
+      description: Verifica directamente si el usuario y la contraseña proporcionados coinciden en la base de datos.
+      operationId: postValidarUsuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - Usuario
+                - Pasword
+              properties:
+                Usuario:
+                  type: string
+                  example: jlopez
+                Pasword:
+                  type: string
+                  example: MiClaveSecreta99
+      responses:
+        '200':
+          description: Usuario validado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Usuario validado correctamente
+                  Success:
+                    type: boolean
+                    example: true
+                  usuario:
+                    $ref: '#/components/schemas/UsuarioSanitizado'
+        '401':
+          description: Credenciales no válidas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Usuario o password incorrecto
+                  Success:
+                    type: boolean
+                    example: false
+        '422':
+          $ref: '#/components/responses/422ValidationError'
+
+  /registrarusuario:
+    post:
+      tags:
+        - Autenticación y Usuarios
+      summary: Registrar cuenta de usuario
+      description: Crea un nuevo usuario en el sistema. Hashea la contraseña con Bcrypt y valida unicidad de nombre de usuario y correo electrónico.
+      operationId: postRegistrarUsuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrarUsuarioRequest'
+      responses:
+        '201':
+          description: Usuario creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Usuario creado correctamente
+                  usuario:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 6
+                      Usuario:
+                        type: string
+                        example: mgonzalez
+        '422':
+          $ref: '#/components/responses/422ValidationError'
+
+  /usuarios:
+    post:
+      tags:
+        - Autenticación y Usuarios
+      summary: Crear usuario (alias REST)
+      description: Alias directo de `POST /registrarusuario`.
+      operationId: postUsuariosAlias
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrarUsuarioRequest'
+      responses:
+        '201':
+          description: Usuario creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Usuario creado correctamente
+                  usuario:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 6
+                      Usuario:
+                        type: string
+                        example: mgonzalez
+        '422':
+          $ref: '#/components/responses/422ValidationError'
+
+  /user:
+    get:
+      tags:
+        - Autenticación y Usuarios
+      summary: Obtener perfil de usuario autenticado
+      description: Retorna el modelo del usuario autenticado mediante token Bearer (Laravel Sanctum).
+      operationId: getAuthUser
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Perfil del usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  email:
+                    type: string
+        '401':
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Unauthenticated.
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    201ElementoCreated:
+      description: Elemento registrado exitosamente
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              message:
+                type: string
+                example: Elemento creado correctamente
+              elemento:
+                $ref: '#/components/schemas/Elemento'
+    422ValidationError:
+      description: Error de validación en los datos enviados
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Los datos proporcionados no son válidos.
+              errors:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    type: string
+                example:
+                  Usuario:
+                    - El campo Usuario ya ha sido tomado.
+                  Pasword:
+                    - El campo Pasword debe tener al menos 8 caracteres.
+    500ServerError:
+      description: Error interno del servidor
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: Error al guardar el registro
+              error:
+                type: string
+                nullable: true
+
+  schemas:
+    Fraccion:
+      type: object
+      properties:
+        Id:
+          type: integer
+          example: 1
+        Nombre:
+          type: string
+          example: Fracción I
+        Consecutivo:
+          type: integer
+          example: 1
+
+    Articulo:
+      type: object
+      properties:
+        Id:
+          type: integer
+          example: 1
+        Nombre:
+          type: string
+          example: Artículo 70
+
+    Elemento:
+      type: object
+      properties:
+        Id:
+          type: integer
+          example: 1
+        NombreElemento:
+          type: string
+          example: Articulo
+
+    RegistrarElementoRequest:
+      type: object
+      required:
+        - NombreElemento
+      properties:
+        NombreElemento:
+          type: string
+          maxLength: 100
+          description: Nombre descriptivo del elemento o categoría.
+          example: Auditorías Externas
+        nombre:
+          type: string
+          maxLength: 100
+          description: Alias aceptado para NombreElemento.
+          example: Auditorías Externas
+
+    ConsultaFiltroRequest:
+      type: object
+      properties:
+        annio:
+          type: integer
+          description: Año fiscal. Enviar 0 para omitir el filtro.
+          example: 2024
+        idarticulo:
+          type: integer
+          description: ID del artículo. Enviar 0 para omitir.
+          example: 1
+        idfraccion:
+          type: integer
+          description: ID de la fracción. Enviar 0 para omitir.
+          example: 1
+        idtrimestre:
+          type: integer
+          description: ID del trimestre (1 a 4). Enviar 0 para omitir.
+          example: 1
+
+    ConsultaDocumentoResult:
+      type: object
+      properties:
+        ID:
+          type: integer
+          example: 105
+        Link:
+          type: string
+          format: uri
+          example: https://transparencia.gob.mx/doctos/acta2024.pdf
+        NombreArchivo:
+          type: string
+          example: acta2024.pdf
+        Annio:
+          type: integer
+          example: 2024
+        idArticulo:
+          type: integer
+          example: 1
+        Fraccion:
+          type: string
+          example: Fracción I
+        NombreCorto:
+          type: string
+          example: 1er Trim
+        Trimestre:
+          type: integer
+          example: 1
+        Consecutivo:
+          type: integer
+          example: 1
+
+    LeyDocumento:
+      type: object
+      properties:
+        ID:
+          type: integer
+          example: 34
+        Link:
+          type: string
+          format: uri
+          example: https://transparencia.gob.mx/leyes/ley_general.pdf
+        Documento:
+          type: string
+          example: Ley General de Transparencia
+        Annio:
+          type: integer
+          example: 2024
+
+    RegistrarEnlaceRequest:
+      type: object
+      required:
+        - link
+      properties:
+        link:
+          type: string
+          maxLength: 600
+          description: URL o hipervínculo del documento.
+          example: https://transparencia.gob.mx/doctos/presupuesto.pdf
+        nombrearchivo:
+          type: string
+          maxLength: 255
+          description: Nombre del archivo descargable.
+          example: presupuesto_2026.pdf
+        annio:
+          type: integer
+          example: 2026
+        idarticulo:
+          type: integer
+          example: 1
+        idfraccion:
+          type: integer
+          example: 2
+        idtrimestre:
+          type: integer
+          example: 1
+        clasificacion:
+          type: integer
+          example: 1
+        urlcarpeta:
+          type: string
+          maxLength: 500
+        linkhtml:
+          type: string
+        idarticulofraccion:
+          type: integer
+        fechacreacion:
+          type: string
+          maxLength: 50
+        pesokb:
+          type: string
+          maxLength: 255
+        idinciso:
+          type: string
+          maxLength: 10
+        mostrarentransp:
+          type: integer
+          example: 1
+        idponencia:
+          type: integer
+        idtipoestrado:
+          type: integer
+        idsubcategoriahijo:
+          type: integer
+        idsubcategoria:
+          type: integer
+
+    EstradoItem:
+      type: object
+      properties:
+        Id:
+          type: integer
+          example: 1
+        Annio:
+          type: integer
+          example: 2024
+        NombreArchivo:
+          type: string
+          example: notificacion_acuerdo_01.pdf
+        IdTipoEstrado:
+          type: integer
+          example: 1
+        Link:
+          type: string
+          format: uri
+          example: https://transparencia.gob.mx/estrados/acuerdo_01.pdf
+        IdPonencia:
+          type: integer
+          example: 2
+        Fecha:
+          type: string
+          example: '2024-03-15 10:00:00'
+        Estrado:
+          type: string
+          example: Estrado Físico
+        ponencia:
+          type: string
+          example: Ponencia Primera
+
+    RegistrarEstradoRequest:
+      type: object
+      required:
+        - idtipoestrado
+        - idponencia
+        - fecha
+        - nombrearchivo
+      properties:
+        idtipoestrado:
+          type: integer
+          example: 1
+        idponencia:
+          type: integer
+          example: 1
+        fecha:
+          type: string
+          description: Fecha del estrado (formato YYYY-MM-DD o YYYY-MM-DD HH:MM:SS)
+          example: '2026-11-13'
+        nombrearchivo:
+          type: string
+          maxLength: 255
+          example: cedula_notificacion_52.pdf
+        link:
+          type: string
+          maxLength: 255
+          example: https://transparencia.gob.mx/estrados/cedula_52.pdf
+        annio:
+          type: integer
+          example: 2026
+
+    LoginRequest:
+      type: object
+      required:
+        - Usuario
+      properties:
+        Usuario:
+          type: string
+          example: admin
+        Pasword:
+          type: string
+          description: Contraseña del usuario. Se acepta 'Pasword' o 'password'.
+          example: claveSecreta123
+        password:
+          type: string
+          description: Alternativa para 'Pasword'.
+          example: claveSecreta123
+
+    RegistrarUsuarioRequest:
+      type: object
+      required:
+        - Usuario
+        - Nombre
+        - ApellidoP
+        - Amaterno
+        - Pasword
+        - CorreoElectronico
+      properties:
+        Usuario:
+          type: string
+          maxLength: 255
+          description: Identificador de usuario único.
+          example: mgonzalez
+        Nombre:
+          type: string
+          maxLength: 255
+          example: María
+        ApellidoP:
+          type: string
+          maxLength: 255
+          example: González
+        Amaterno:
+          type: string
+          maxLength: 255
+          example: Ruiz
+        Pasword:
+          type: string
+          minLength: 8
+          description: Contraseña de acceso (mínimo 8 caracteres).
+          example: SuperPassword2026!
+        CorreoElectronico:
+          type: string
+          format: email
+          maxLength: 255
+          description: Correo electrónico único.
+          example: maria.gonzalez@transparencia.gob.mx
+
+    UsuarioSanitizado:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        Usuario:
+          type: string
+          example: admin
+        Nombre:
+          type: string
+          example: Administrador
+        ApellidoP:
+          type: string
+          example: Sistema
+        Amaterno:
+          type: string
+          example: Central
+        CorreoElectronico:
+          type: string
+          format: email
+          example: admin@transparencia.gob.mx
+
+    SuccessCreatedResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Se ha guardado correctamente
+        id:
+          type: integer
+          example: 102
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Ocurrió un error en la solicitud

@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\ConsultaController;
 use App\Http\Controllers\Api\DatosLinksController;
 use App\Http\Controllers\Api\FraccionController;
 use App\Http\Controllers\Api\ArticuloController;
+use App\Http\Controllers\Api\ElementoController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\UsuarioController;
 
@@ -39,5 +40,9 @@ Route::post('/login', [LoginController::class, "Login"]);
 Route::post('/usuarios', [UsuarioController::class, "store"]);
 Route::post('/registrarusuario', [UsuarioController::class, "store"]);
 Route::post('/validarusuario', [UsuarioController::class, "validar"]);
+Route::get('/elementos', [ElementoController::class, "index"]);
+Route::get('/generaelemento', [ElementoController::class, "index"]);
+Route::post('/generaelemento', [ElementoController::class, "store"]);
+Route::post('/elementos', [ElementoController::class, "store"]);
 
 });
