@@ -103,6 +103,31 @@ class ApiEndpointsTest extends TestCase
         $failResponse->assertStatus(422);
     }
 
+    public function test_registrar_link_handles_simultaneous_aliases_and_linkhtml(): void
+    {
+        $payload = [
+            'link' => 'https://example.com/alias.pdf',
+            'Link' => 'https://example.com/alias.pdf',
+            'nombrearchivo' => 'alias.pdf',
+            'NombreArchivo' => 'alias.pdf',
+            'annio' => 2026,
+            'Annio' => 2026,
+            'linkhtml' => '<b>Contenido HTML</b>',
+        ];
+
+        $response = $this->postJson('/api/registrar', $payload);
+
+        $response->assertStatus(201)
+                 ->assertJson(['success' => true]);
+
+        $this->assertDatabaseHas('datoslinks', [
+            'Link' => 'https://example.com/alias.pdf',
+            'NombreArchivo' => 'alias.pdf',
+            'Annio' => 2026,
+            'LinklHtml' => '<b>Contenido HTML</b>',
+        ]);
+    }
+
     public function test_getestrados_returns_list(): void
     {
         DB::table('tipoestrados')->insert(['Id' => 1, 'Nombre' => 'Tipo 1']);

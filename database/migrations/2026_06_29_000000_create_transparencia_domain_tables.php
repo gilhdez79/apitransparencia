@@ -11,14 +11,21 @@ return new class extends Migration
         if (! Schema::hasTable('articulos')) {
             Schema::create('articulos', function (Blueprint $table) {
                 $table->id('Id');
-                $table->string('Nombre');
+                $table->string('Nombre')->nullable();
+                $table->string('NombreArticulo', 100)->nullable();
+                $table->string('EstructuraCarpeta', 100)->nullable();
+                $table->string('Titulo', 100)->nullable();
             });
         }
 
         if (! Schema::hasTable('fraccions')) {
             Schema::create('fraccions', function (Blueprint $table) {
                 $table->id('Id');
-                $table->string('Nombre');
+                $table->string('Nombre')->nullable();
+                $table->string('EstructuraCarpeta', 100)->nullable();
+                $table->unsignedBigInteger('IdArticulo')->nullable();
+                $table->string('Descripcion', 700)->nullable();
+                $table->string('Titulo', 100)->nullable();
                 $table->integer('Consecutivo')->nullable();
             });
         }
@@ -48,18 +55,18 @@ return new class extends Migration
         if (! Schema::hasTable('datoslinks')) {
             Schema::create('datoslinks', function (Blueprint $table) {
                 $table->id('ID');
-                $table->string('urlcarpeta')->nullable();
+                $table->string('UrlCarpeta', 500)->nullable();
                 $table->text('Link')->nullable();
-                $table->text('linkhtml')->nullable();
-                $table->unsignedBigInteger('idarticulofraccion')->nullable();
-                $table->dateTime('fechacreacion')->nullable();
-                $table->unsignedBigInteger('pesokb')->nullable();
+                $table->text('LinklHtml')->nullable();
+                $table->unsignedBigInteger('idArticuloFraccion')->nullable();
+                $table->string('FechaCreacion', 50)->nullable();
+                $table->string('PesoKb', 255)->nullable();
                 $table->string('NombreArchivo')->nullable();
                 $table->integer('Annio')->nullable();
                 $table->unsignedBigInteger('idTrimestre')->nullable();
                 $table->unsignedBigInteger('idArticulo')->nullable();
                 $table->unsignedBigInteger('IdFraccion')->nullable();
-                $table->unsignedBigInteger('idinciso')->nullable();
+                $table->string('IdinCiso', 10)->nullable();
                 $table->boolean('mostrarentransp')->default(true);
                 $table->integer('Clasificacion')->nullable();
                 $table->unsignedBigInteger('idponencia')->nullable();
