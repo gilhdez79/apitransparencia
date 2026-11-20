@@ -175,6 +175,30 @@ paths:
         '500':
           $ref: '#/components/responses/500ServerError'
 
+  /elementosclase:
+    get:
+      tags:
+        - Catálogos
+      summary: Listar clases de elementos
+      description: Devuelve el catálogo completo de clases de elementos registradas en la tabla `elementosclase`.
+      operationId: getElementosClase
+      responses:
+        '200':
+          description: Lista de clases de elementos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ElementoClase'
+              example:
+                - Id: 1
+                  Clase: A
+                - Id: 2
+                  Clase: B
+                - Id: 3
+                  Clase: C
+
   /consulta:
     get:
       tags:
@@ -654,6 +678,17 @@ components:
         NombreElemento:
           type: string
           example: Articulo
+
+    ElementoClase:
+      type: object
+      properties:
+        Id:
+          type: integer
+          example: 1
+        Clase:
+          type: string
+          nullable: true
+          example: A
 
     RegistrarElementoRequest:
       type: object

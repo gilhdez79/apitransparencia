@@ -83,6 +83,20 @@
           }
         },
         {
+          "name": "Listar Elementos Clase",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/elementosclase",
+              "host": ["{{baseUrl}}"],
+              "path": ["elementosclase"]
+            }
+          }
+        },
+        {
           "name": "Generar Elemento (Registrar)",
           "request": {
             "method": "POST",

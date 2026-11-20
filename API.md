@@ -213,6 +213,27 @@ Registra un nuevo elemento o clasificación en la tabla `elementos`. Valida que 
   }
   ```
 
+#### `GET /elementosclase`
+Devuelve la lista completa de clases de elementos registradas en la tabla `elementosclase`.
+
+- **Respuesta `200 OK`**:
+  ```json
+  [
+    {
+      "Id": 1,
+      "Clase": "A"
+    },
+    {
+      "Id": 2,
+      "Clase": "B"
+    },
+    {
+      "Id": 3,
+      "Clase": "C"
+    }
+  ]
+  ```
+
 ---
 
 ### Búsqueda y Consultas
@@ -622,6 +643,7 @@ echo "Bienvenido: " . $datos['usuario']['Nombre'];
 | `tipoestrados` | `Id` (int) | Catálogo de tipos de estrados | `Id`, `Nombre` |
 | `trimestre` | `Id` (int) | Periodos trimestrales | `Id`, `Nombre`, `NombreCorto` |
 | `elementos` | `Id` (smallint) | Catálogo de elementos y secciones | `Id`, `NombreElemento` |
+| `elementosclase` | `Id` (smallint) | Catálogo de clases de elementos | `Id`, `Clase` |
 
 ---
 

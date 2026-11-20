@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\DatosLinksController;
 use App\Http\Controllers\Api\FraccionController;
 use App\Http\Controllers\Api\ArticuloController;
 use App\Http\Controllers\Api\ElementoController;
+use App\Http\Controllers\Api\ElementoClaseController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\UsuarioController;
 
@@ -44,5 +45,6 @@ Route::get('/elementos', [ElementoController::class, "index"]);
 Route::get('/generaelemento', [ElementoController::class, "index"]);
 Route::post('/generaelemento', [ElementoController::class, "store"]);
 Route::post('/elementos', [ElementoController::class, "store"]);
+Route::get('/elementosclase', [ElementoClaseController::class, "index"]);
 
 });
